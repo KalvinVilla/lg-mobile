@@ -1,86 +1,47 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Roles from "../components/Roles";
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
 
-const ROLES = [
-    {
-        id: 0,
-        name: 'hunter',
-        max: 1,
-    },
-    {
-        id: 1,
-        name: 'cupid',
-        max: 1,
-    },
-    {
-        id: 2,
-        name: 'witch',
-        max: 1,
-    },
-    {
-        id: 3,
-        name: 'thief',
-        max: 1,
-    },
-    {
-        id: 4,
-        name: 'idiot',
-        max: 1,
-    },
-    {
-        id: 5,
-        name: 'bodyguard',
-        max: 1,
-    },
-    {
-        id: 6,
-        name: 'seer',
-        max: 1,
-    },
-    {
-        id: 7,
-        name: 'villager',
-        max: 10,
-    },
-    {
-        id: 8,
-        name: 'werewolf',
-        max: 10,
-    },
-]
 
 export default function Game({ navigation, route }) {
 
-    const { uid } = route.params;
+    const { uid, socket } = route.params;
+    const [list, setList] = useState([]);
 
-    const handleCreate = () => {
+    console.log(route.params);
 
+    const handleRefresh = () => {
+        if (socket) {
+            socket.emit('refresh', uid);
+        }
+    
     }
 
-    const viewRoles = () => {   
-        return (
-            <View>
-                {ROLES.map((role) => (
-                    <Roles key={role.id} role={role.name} max={role.max} />
-                ))}
-            </View>
-        )
-    }
+    useEffect(() => {
+        if (socket) {
+            socket.on('list', (data) => {
+                console.log(data);
+                setList(data);
+            });
+        }
+    }, [socket])
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Choissisez les roles</Text>
-            {viewRoles()}
-            <TouchableOpacity onPress={() => handleCreate()} style={styles.button}>
-                <Text style={styles.button_content}>Crée</Text>
+            <Text style={styles.title}>Game {uid}</Text>
+            <Text style={styles.title}>Liste des joueurs</Text>
+            <TouchableOpacity onPress={() => handleRefresh()}  style={styles.button} >
+                <Text style={styles.button_content} >Refresh</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {navigation.goBack()}}  style={styles.button} >
-                <Text style={styles.button_content} >Retour</Text>
-            </TouchableOpacity>
+            <View>
+                {list.map((player, key) => (
+                    <Text key={key}>{player}</Text>
+                ))}
+            </View>
+
         </View>
     )
 
-}
+} 
 
 const styles = StyleSheet.create({
     container: {
@@ -91,9 +52,8 @@ const styles = StyleSheet.create({
     title: {
       marginTop: 50,
       color: '#E7F6F2',
-      fontSize: 36,
+      fontSize: 50,
       fontWeight: 'bold',
-      marginBottom: 50,
     },
     button: {
         backgroundColor: '#A5C9CA',
@@ -103,8 +63,8 @@ const styles = StyleSheet.create({
         marginTop: 50,
       },
     button_content: {
-    color: '#2C3333',
-    fontSize: 16,
-    textAlign: 'center',
+        color: '#2C3333',
+        fontSize: 16,
+        textAlign: 'center',
     },
-})
+});
