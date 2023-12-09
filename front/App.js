@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Font from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
@@ -14,6 +15,17 @@ import Join from './pages/party/Join';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+
+  React.useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'ancient': require('./assets/fonts/ancient.ttf'),
+      });
+    }
+
+    loadFont();
+  }, []);
+
   return (
     <NavigationContainer >
       <Stack.Navigator screenOptions={{

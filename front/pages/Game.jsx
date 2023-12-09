@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, Pressable } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
 import Lobby from '../components/view/Lobby';
 import Player from '../components/view/Player';
+import GameMaster from '../components/view/GameMaster';
 
 
 export default function Game({ navigation, route }) {
@@ -38,7 +39,8 @@ export default function Game({ navigation, route }) {
 
     const PlayerView = () => {
         return <View>
-            <Player />
+            <GameMaster />
+            {/* <GameMaster />        <Player /> */}
         </View>
     }
 

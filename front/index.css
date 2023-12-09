@@ -1,0 +1,10 @@
+@font-face {
+    font-family: Ancient;
+    src: url('./font/Ancient\ Medium.ttf');
+}
+
+body {
+    font-family: Ancient, tahoma, verdana, arial, sans-serif;
+    font-size: 11px;
+    color: #141823;
+}
