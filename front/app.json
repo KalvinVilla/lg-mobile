@@ -12,8 +12,14 @@
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
-      "**/*"
+      "**/*",
+      "assets/*"
     ],
+    "fonts": {
+      "ancient": {
+        "asset": "./assets/fonts/ancient.ttf"
+      }
+    },
     "ios": {
       "supportsTablet": true
     },
