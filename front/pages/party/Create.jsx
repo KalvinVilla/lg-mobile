@@ -53,10 +53,12 @@ const ROLES = [
     },
 ]
 
-const SERVER_URL = 'http://192.168.1.18:3000';
+const SERVER_URL = "http://192.168.1.18:3000"
 
 
 export default function Game({ navigation, route }) {
+
+    console.log(SERVER_URL)
 
     const [socket, setSocket] = useState(null);
 

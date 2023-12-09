@@ -13,22 +13,27 @@ const { npm_package_name: name, npm_package_version: version } = process.env;
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 
-// Gestion des connexions côté serveur
+
 io.on('connection', (socket) => {
   const address = socket.handshake.address;
   log.info('New client connected address: %s', address);
 
-  // Gestion de la demande de rejoindre le chat
+
   socket.on('create', () => {
     const game = new Game()
     game.addPlayer('Player 1')
-    socket.join(game.uid);
+    console.log(game)
+    socket.join(game.uid.toString());
     log.info('New client %s create game is uid : %s', address, game.uid);
-    io.to(game.uid).emit('create_response', game.uid);
+    io.to(game.uid.toString()).emit('create_response', game.uid);
   });
 
   socket.on('join', (data) => {
@@ -53,6 +58,31 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on('leave', (data) => {
+    const { uid } = data;
+    console.log(uid)
+
+    console.log("list des games")
+    Game.Games.forEach(game => {
+      console.log(game)
+    });
+    const game = Game.getGame(uid)
+    if(game) {
+      socket.leave(uid)
+      game.addPlayer('Player 2')
+      log.info('New client %s join game is uid : %s', address, uid);
+      io.to(uid).emit('leave_response', uid);
+
+    } else {
+      log.info("Game not found")
+    }
+
+  });
+
+  socket.on('start', (uid) => {
+    io.to(uid).emit('start_response', uid);
+  });
+
   socket.on('refresh', (uid) => {
     const game = Game.getGame(uid)
     if(game) {
@@ -64,7 +94,7 @@ io.on('connection', (socket) => {
 
   });
 
-  // Gestion de la déconnexion de l'utilisateur
+
   socket.on('disconnect', () => {
     log.info('Utilisateur déconnecté');
   });

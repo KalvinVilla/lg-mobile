@@ -1,43 +1,50 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
+import Lobby from '../components/view/Lobby';
+import Player from '../components/view/Player';
 
 
 export default function Game({ navigation, route }) {
 
     const { uid, socket } = route.params;
     const [list, setList] = useState([]);
+    const [started, setStarted] = useState(false);
 
-    console.log(route.params);
-
-    const handleRefresh = () => {
-        if (socket) {
-            socket.emit('refresh', uid);
-        }
+    // const handleRefresh = () => {
+    //     if (socket) {
+    //         socket.emit('refresh', uid);
+    //     }
     
-    }
+    // }
 
     useEffect(() => {
         if (socket) {
+            console.log("new info socket")
+
             socket.on('list', (data) => {
                 console.log(data);
                 setList(data);
             });
+
+            socket.on('start_response', (data) => {
+                console.log(data);
+                setStarted(true);    
+            });
         }
+
+
     }, [socket])
+
+
+    const PlayerView = () => {
+        return <View>
+            <Player />
+        </View>
+    }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Game {uid}</Text>
-            <Text style={styles.title}>Liste des joueurs</Text>
-            <TouchableOpacity onPress={() => handleRefresh()}  style={styles.button} >
-                <Text style={styles.button_content} >Refresh</Text>
-            </TouchableOpacity>
-            <View>
-                {list.map((player, key) => (
-                    <Text key={key}>{player}</Text>
-                ))}
-            </View>
-
+            {started ? PlayerView() : Lobby(list, uid, socket) }
         </View>
     )
 

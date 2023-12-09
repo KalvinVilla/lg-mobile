@@ -3,9 +3,11 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-nativ
 
 import io from 'socket.io-client';
 
-const SERVER_URL = 'http://192.168.1.18:3000';
+const SERVER_URL = "http://192.168.1.18:3000"//process.env.SERVER_URL
 
 export default function Join({ navigation, route }) {
+
+  console.log(SERVER_URL)
 
   const [socket, setSocket] = useState(null);
 
@@ -18,7 +20,7 @@ export default function Join({ navigation, route }) {
     };
   }, []);
 
-    const [party_uid, setUIDParty] = useState(null);
+    const [party_uid, setUIDParty] = useState("");
 
     const handleJoin = () => {
 
@@ -46,8 +48,7 @@ export default function Join({ navigation, route }) {
         <View style={styles.container}>
         <Text style={styles.title}>Rejoindre une partie</Text>
         <TextInput
-
-            keyboardType='numeric'
+            inputMode="numeric"
             style={styles.party_input}
             value={party_uid}
             onChangeText={setUIDParty}
