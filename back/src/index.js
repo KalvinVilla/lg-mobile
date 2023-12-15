@@ -27,27 +27,20 @@ io.on('connection', (socket) => {
   log.info('New client connected address: %s', address);
 
 
-  socket.on('create', () => {
-    const game = new Game()
-    game.addPlayer('Player 1')
-    console.log(game)
+  socket.on('create', (data) => {
+    const { player, roles } = data;
+    const game = new Game(player, roles)
     socket.join(game.uid.toString());
     log.info('New client %s create game is uid : %s', address, game.uid);
     io.to(game.uid.toString()).emit('create_response', game.uid);
   });
 
   socket.on('join', (data) => {
-    const { uid } = data;
-    console.log(uid)
-
-    console.log("list des games")
-    Game.Games.forEach(game => {
-      console.log(game)
-    });
+    const { uid, player } = data;
     const game = Game.getGame(uid)
     if(game) {
       socket.join(uid);
-      game.addPlayer('Player 2')
+      game.addPlayer(player)
       log.info('New client %s join game is uid : %s', address, uid);
       io.to(uid).emit('join_response', uid);
       io.to(uid).emit('list', game.players);
@@ -59,20 +52,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('leave', (data) => {
-    const { uid } = data;
-    console.log(uid)
-
-    console.log("list des games")
-    Game.Games.forEach(game => {
-      console.log(game)
-    });
+    const { uid, player } = data;
     const game = Game.getGame(uid)
     if(game) {
       socket.leave(uid)
-      game.addPlayer('Player 2')
+      game.removePlayer(player)
       log.info('New client %s join game is uid : %s', address, uid);
       io.to(uid).emit('leave_response', uid);
-
     } else {
       log.info("Game not found")
     }
@@ -80,19 +66,14 @@ io.on('connection', (socket) => {
   });
 
   socket.on('start', (uid) => {
-    io.to(uid).emit('start_response', uid);
-  });
-
-  socket.on('refresh', (uid) => {
     const game = Game.getGame(uid)
-    if(game) {
-      io.to(uid).emit('list', game.players);
 
-    } else {
-      log.info("Game not found")
-    }
-
+    io.to(uid).emit('start_response', {
+      uid: uid,
+      roleList: game.attributesRoles()
+    });
   });
+
 
 
   socket.on('disconnect', () => {
