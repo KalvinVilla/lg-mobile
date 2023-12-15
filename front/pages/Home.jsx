@@ -6,6 +6,8 @@ import Villager from '../img/game/villager.png';
 
 export default function Home({ navigation }) {
 
+  const [player, setPlayer] = React.useState('');
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
@@ -16,19 +18,26 @@ export default function Home({ navigation }) {
               <Image style={styles.image} source={Villager} />
           </View>
         </View>
+        
 
         <View style={styles.button_container}>
         <TextInput
             inputMode="text"
             style={styles.party_input}
+            value={player}
+            onChangeText={setPlayer}
             maxLength={24}
             placeholder="Nom du joueur"
         />
-            <TouchableOpacity onPress={() => navigation.navigate('Create')} style={styles.button}>
+            <TouchableOpacity disabled={player.length <= 1} onPress={() => navigation.navigate('Create', {
+                player: player,
+            })} style={styles.button}>
                 <Text style={styles.button_content}>Crée une partie</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Join')}  style={styles.button} >
+            <TouchableOpacity activeOpacity={player.length <= 1 ? 1 : 0.2}  disabled={player.length <= 1} onPress={() => navigation.navigate('Join', {
+                player: player,
+            })}  style={styles.button} >
                 <Text style={styles.button_content} >Rejoindre une partie</Text>
             </TouchableOpacity>
 

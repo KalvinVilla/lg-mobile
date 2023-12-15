@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, Pressable } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import Lobby from '../components/view/Lobby';
 import Player from '../components/view/Player';
@@ -7,8 +7,10 @@ import GameMaster from '../components/view/GameMaster';
 
 export default function Game({ navigation, route }) {
 
-    const { uid, socket } = route.params;
+    const { uid, socket, player } = route.params;
+    const [roles, setRoles] = useState([]);
     const [list, setList] = useState([]);
+    const [role, setRole] = useState(null);
     const [started, setStarted] = useState(false);
 
     // const handleRefresh = () => {
@@ -28,8 +30,13 @@ export default function Game({ navigation, route }) {
             });
 
             socket.on('start_response', (data) => {
+                const { roleList } = data;
+                setRoles(roleList)
+                const player_role = roleList.find(role => role.joueur === player);
+                setRole(player_role.role);
                 console.log(data);
-                setStarted(true);    
+
+                setStarted(true);
             });
         }
 
@@ -38,6 +45,11 @@ export default function Game({ navigation, route }) {
 
 
     const PlayerView = () => {
+        if (role === "gameMaster") {
+            return <GameMaster roles={roles} />
+        } else {
+            return <Player role={role} />
+        }
         return <View>
             <GameMaster />
             {/* <GameMaster />        <Player /> */}

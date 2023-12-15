@@ -3,11 +3,11 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-nativ
 
 import io from 'socket.io-client';
 
-const SERVER_URL = "http://192.168.1.18:3000"//process.env.SERVER_URL
+const SERVER_URL = "http://192.168.1.23:3000"//process.env.SERVER_URL
 
 export default function Join({ navigation, route }) {
 
-  console.log(SERVER_URL)
+  const { player } = route.params;
 
   const [socket, setSocket] = useState(null);
 
@@ -26,7 +26,8 @@ export default function Join({ navigation, route }) {
 
       if (socket) {
         socket.emit('join', {
-          uid: party_uid
+          uid: party_uid,
+          player: player,
         });
       }
 
@@ -39,6 +40,7 @@ export default function Join({ navigation, route }) {
               navigation.navigate('Game', {
                 uid: data,
                 socket: socket,
+                player: player,
               })
           });
       }

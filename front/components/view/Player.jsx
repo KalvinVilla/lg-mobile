@@ -1,13 +1,38 @@
-import WereWolf from '../../img/game/werewolf.png';
 import { Text, View, Image, StyleSheet } from 'react-native';
+import hunterImage from '../../img/game/hunter.png';
+import witchImage from '../../img/game/witch.png';
+import seerImage from '../../img/game/seer.png';
+import werewolfImage from '../../img/game/werewolf.png';
 
+export default function Player({role}) {
 
-export default function Player() {
+    let roleImage;
+
+    // Associer le rôle à l'image appropriée
+    switch (role) {
+        case 'hunter':
+            roleImage = hunterImage;
+            break;
+        case 'witch':
+            roleImage = witchImage;
+            break;
+        case 'seer':
+            roleImage = seerImage;
+            break;
+        case 'werewolf':
+            roleImage = werewolfImage;
+            break;
+        default:
+            roleImage = werewolfImage;
+            break;
+    }
+
     return (
         <View>
-            <Text style={styles.title}>Loup garou</Text>
-            <Text>Tu êtes Loup garou votre rôle est de tuer les villageois</Text>
-            <Image style={styles.image} source={WereWolf} />
+            <Text style={styles.title}>{role}</Text>
+            <Text>Tu es {role} </Text>
+            
+            <Image style={styles.image} source={roleImage} />
         </View>
     )
 }

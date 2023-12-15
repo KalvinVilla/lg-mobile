@@ -53,12 +53,12 @@ const ROLES = [
     },
 ]
 
-const SERVER_URL = "http://192.168.1.18:3000"
+const SERVER_URL = "http://192.168.1.23:3000"
 
 
 export default function Game({ navigation, route }) {
 
-    console.log(SERVER_URL)
+    const { player } = route.params;
 
     const [socket, setSocket] = useState(null);
 
@@ -72,23 +72,46 @@ export default function Game({ navigation, route }) {
       }, []);
 
     const handleCreate = () => {
+        const roles = [
+            {
+                name: 'hunter',
+                max: 1,
+            },
+            {
+                name: 'witch',
+                max: 1,
+            },
+            {
+                name: 'seer',
+                max: 1,
+            },
+            {
+                name: 'werewolf',
+                max: 2,
+            },
+        ]
         if (socket) {
-            socket.emit('create');
+            socket.emit('create', {
+                player: player,
+                roles: roles,
+            });
         }
     }
 
     useEffect(() => {
         if (socket) {
+            console.log("new info socket")
             socket.on('create_response', (data) => {
                 navigation.navigate('Game', {
                     uid: data,
                     socket: socket,
+                    player: player,
                   })
             });
         }
     }, [socket])
 
-    const viewRoles = () => {   
+    const viewRoles = () => {
         return (
             <View>
                 {ROLES.map((role) => (

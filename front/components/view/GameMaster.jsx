@@ -5,6 +5,14 @@ import WereWolf from '../../img/game/werewolf.png';
 import Villager from '../../img/game/villager.png';
 import Seer from '../../img/game/seer.png';
 import Witch from '../../img/game/witch.png';
+import Hunter from '../../img/game/hunter.png';
+import Cupid from '../../img/game/cupid.png';
+
+const ViewType = {
+    Player: 'Player',
+    Game: 'Game',
+    List: 'List'
+}
 
 
 const Player = [
@@ -40,12 +48,18 @@ const Player = [
     }
 ]
 
-export default function GameMaster() {
+export default function GameMaster({roles}) {
 
-    const [view, setView] = useState(0)
+    const [view, setView] = useState(ViewType.List)
+    const [currentPlayer, setCurrentPlayer] = useState(roles[0])
 
-    const handleView = (value) => {
-        setView(value)
+    const handleView = (view) => {
+        setView(view)
+    }
+
+    const playerView = (player) => {
+        setCurrentPlayer(player)
+        setView(ViewType.Player)
     }
 
     const viewImage = (role, style) => {  
@@ -58,20 +72,27 @@ export default function GameMaster() {
                 return <Image style={style} source={Seer} />
             case "witch":
                 return <Image style={style} source={Witch} />
+            case "hunter":
+                return <Image style={style} source={Hunter} />
+            case "cupid":
+                return <Image style={style} source={Cupid} />
             default:
                 return <Image style={style} source={Villager} />
         }
     }
 
-    const PlayerView = () => {
+    const ListView = () => {
         return <View style={{alignItems: 'center',}}>
             <Text style={{color: '#E7F6F2', fontSize: 24}}>Liste des joueurs</Text>
             <ScrollView>
-                {Player.map((player, key) => (
-                    <TouchableOpacity key={key} style={{display: 'flex', flexDirection: 'row', alignItems: 'center', alignContent: 'center', marginVertical: 10}}>
+                {roles.map((player, key) => (
+
+                    player.role === "gameMaster" ? null :
+
+                    <TouchableOpacity onPress={() => playerView(player)} key={key} style={{display: 'flex', flexDirection: 'row', alignItems: 'center', alignContent: 'center', marginVertical: 10}}>
                         {viewImage(player.role, styles.image)}
-                        <Text style={{marginHorizontal: 10, color: '#E7F6F2'}} >{player.name}</Text>
-                        {player.love ? <Text style={{color: '#E7F6F2'}}>❤️</Text> : null}
+                        <Text style={{marginHorizontal: 10, color: '#E7F6F2'}} >{player.joueur}</Text>
+                        {player?.love ? <Text style={{color: '#E7F6F2'}}>❤️</Text> : null}
                     </TouchableOpacity>
                 ))}
             </ScrollView>
@@ -89,23 +110,36 @@ export default function GameMaster() {
         </View>
     }
 
+    const PlayerView = () => {
+        return <View style={{alignItems: 'center',}}>
+                {viewImage(currentPlayer.role, styles.image)}
+                <Text style={{marginHorizontal: 10, color: '#E7F6F2'}} >{currentPlayer.joueur}</Text>
+                {currentPlayer?.love ? <Text style={{color: '#E7F6F2'}}>❤️</Text> : null}
+
+                
+        </View>
+    }
+
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Maitre du jeu</Text>
 
         <View style={styles.button_container}>
-            <TouchableOpacity onPress={() => handleView(0)} style={styles.button}>
+            <TouchableOpacity onPress={() => handleView(ViewType.List)} style={styles.button}>
                 <Text style={styles.button_content}>Joueurs</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleView(1)}   style={styles.button} >
+            <TouchableOpacity onPress={() => handleView(ViewType.Game)}   style={styles.button} >
                 <Text style={styles.button_content}>Partie en cours</Text>
             </TouchableOpacity>
         </View>
 
         <View style={styles.main}>
-            {view === 0 ? PlayerView() : GameView() }
+            {view === ViewType.List ? 
+                ListView() : view === ViewType.Game 
+                 ? GameView() : PlayerView()
+            }
         </View>
         </View>
     )
