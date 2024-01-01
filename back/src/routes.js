@@ -8,14 +8,17 @@ import start from "./model/start.js";
 
 const log = logger(import.meta);
 
-export default function Routes(socket) {
+export default function Routes(socket, io) {
 
-    socket.on('create', create);
-    socket.on('join', join);
-    socket.on('leave', leave);
-    socket.on('start', start);
+    const address = socket.handshake.address;
+    log.info('New client connected address: %s', address);
 
-    socket.on('disconnect', disconnect)
+    socket.on('create', (data) => create(socket, io, data));
+    socket.on('join', (data) => join(socket, io, data));
+    socket.on('leave', (data) => leave(socket, io, data));
+    socket.on('start', (data) => start(socket, io, data));
+
+    socket.on('disconnect', (data) => disconnect(socket, io, data))
 
 }
 

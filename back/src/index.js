@@ -22,8 +22,8 @@ const io = new Server(server, {
 });
 
 
-io.use(Authentification);
-io.on('connection', Routes);
+//io.use(Authentification);
+io.on('connection', (socket) => Routes(socket, io));
 
 
 server.listen(PORT, () => {

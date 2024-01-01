@@ -1,24 +1,26 @@
-export default function start(socket) {
+import Game from "../game.js";
+import logger from "../logger.js";
 
-    // socket.on('start', (data) => {
-    //     const { uid } = data;
-    //     const game = Game.getGame(uid)
-    //     if(game) {
-    //       game.start()
-    //       log.info('New client %s start game is uid : %s', address, uid);
-    //       io.to(uid).emit('start_response', uid);
-    //     } else {
-    //       log.info("Game not found")
-    //     }
-    //   });
+const log = logger(import.meta);
 
-      socket.on('start', (uid) => {
-        const game = Game.getGame(uid)
+export default function start(socket, io, data) {
+  const uid = data;
+  console.log(data)
+  const game = Game.getGame(uid)
+
+  if(game) {
+    //game.start()
+    log.info('New client start game is uid : %s', uid);
+    io.to(uid).emit('start_response', {
+      uid: uid,
+      roleList: game.attributesRoles()
+    });
+  } else {
+    log.info("Game not found")
+  }
+
+
     
-        io.to(uid).emit('start_response', {
-          uid: uid,
-          roleList: game.attributesRoles()
-        });
-      });
+
 
 }

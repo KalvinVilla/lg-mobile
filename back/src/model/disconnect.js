@@ -1,7 +1,9 @@
+import logger from "../logger.js";
+
+const log = logger(import.meta);
+
 export default function disconnect(socket) {
 
-    socket.on('disconnect', () => {
-        log.info('Client disconnected');
-    });
+    log.info('Client disconnected');
 
 }
