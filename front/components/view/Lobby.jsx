@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TouchableOpacity } from 'react-native';
 
 export default function Lobby(list, uid, socket) {
 
     const handleStart = () => {
+        console.log(uid);
         if (socket) {
             socket.emit('start', uid);
         }
@@ -17,9 +18,9 @@ export default function Lobby(list, uid, socket) {
                     <Text key={key}>{player}</Text>
                 ))}
             </View>
-            <Pressable onPress={() => handleStart()}  style={styles.button} >
+            <TouchableOpacity onPress={() => handleStart()}  style={styles.button} >
                 <Text style={styles.button_content} >Play</Text>
-            </Pressable>
+            </TouchableOpacity>
         </View>
     )
 

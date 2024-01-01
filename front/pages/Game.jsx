@@ -13,12 +13,6 @@ export default function Game({ navigation, route }) {
     const [role, setRole] = useState(null);
     const [started, setStarted] = useState(false);
 
-    // const handleRefresh = () => {
-    //     if (socket) {
-    //         socket.emit('refresh', uid);
-    //     }
-    
-    // }
 
     useEffect(() => {
         if (socket) {
@@ -50,10 +44,6 @@ export default function Game({ navigation, route }) {
         } else {
             return <Player role={role} />
         }
-        return <View>
-            <GameMaster />
-            {/* <GameMaster />        <Player /> */}
-        </View>
     }
 
     return (

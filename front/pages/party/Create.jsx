@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import io from 'socket.io-client';
 
 import Roles from "../../components/Roles";
+import { SERVER_ADDRESS } from "../../App.js";
 
 
 const ROLES = [
@@ -53,8 +54,6 @@ const ROLES = [
     },
 ]
 
-const SERVER_URL = "http://192.168.1.23:3000"
-
 
 export default function Game({ navigation, route }) {
 
@@ -63,7 +62,8 @@ export default function Game({ navigation, route }) {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const sock = io(SERVER_URL);
+        const sock = io(SERVER_ADDRESS);
+
         setSocket(sock);
     
         return () => {
@@ -90,6 +90,9 @@ export default function Game({ navigation, route }) {
                 max: 2,
             },
         ]
+
+        console.log(socket)
+
         if (socket) {
             socket.emit('create', {
                 player: player,

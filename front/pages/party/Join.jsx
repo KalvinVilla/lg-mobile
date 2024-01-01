@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import io from 'socket.io-client';
-
-const SERVER_URL = "http://192.168.1.23:3000"//process.env.SERVER_URL
+import { SERVER_ADDRESS } from "../../App.js";
 
 export default function Join({ navigation, route }) {
 
@@ -12,7 +11,7 @@ export default function Join({ navigation, route }) {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const sock = io(SERVER_URL);
+    const sock = io(SERVER_ADDRESS);
     setSocket(sock);
 
     return () => {
